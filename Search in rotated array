@@ -1,0 +1,65 @@
+class Solution { 
+    
+    int binarySearch(int[] nums, int target, int start, int end) {
+    while (start <= end) {
+        int mid = start + (end - start) / 2;
+
+       if (target < nums[mid]) {
+            end = mid - 1;
+        } else if (target > nums[mid]) {
+            start = mid + 1;
+        } else {
+            // ans found
+            return mid;
+        }
+    }
+    return -1;
+}
+
+int findingPivot(int[] nums) {
+    int start = 0;
+    int end = nums.length - 1;
+    while (start <= end) {
+        int mid = start + (end - start) / 2;
+        if (mid < end && nums[mid] > nums[mid + 1]) {
+            // You can say a glitch in the matrix, i.e., linearity of an array is violated, and hence you can say that this is an exact pivot.
+            return mid;
+        }
+
+        if (mid > start && nums[mid] < nums[mid - 1]) {
+            // same as above, the array's supposed linearity is violated hence pivot case 2
+            return mid - 1;
+        }
+
+        if (nums[mid] <= nums[start]) {
+            // this condition means our array's left-hand side doesn't hold the potential of being a pivot element because values greater than it exist in our array hence we will make our end as mid-1
+            end = mid - 1;
+        } else {
+            start = mid + 1;
+        }
+    }
+    // in case the array is not rotated.
+    return -1;
+}
+
+int search(int[] nums, int target) {
+    int pivot = findingPivot(nums);
+
+    if (pivot == -1) {
+        // means our array is not rotated hence use normal binary search
+        return binarySearch(nums, target, 0, nums.length - 1);
+    }
+
+    if (nums[pivot] == target) {
+        return pivot;
+    }
+
+    if (target >= nums[0]) {
+        // means our target, as it's from descending to ascending, hence our result shows that target will be in the left-hand side as it is in the left-hand
+        return binarySearch(nums, target, 0, pivot - 1);
+    }
+
+    return binarySearch(nums, target, pivot + 1, nums.length - 1);
+}
+
+}
